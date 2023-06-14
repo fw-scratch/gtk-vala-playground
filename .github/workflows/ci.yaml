@@ -1,0 +1,25 @@
+name: CI
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:testing
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Build Dependencies
+      run: |
+        apt-get -yqq update && apt-get -yqq --no-install-recommends install valac build-essential libgtk-4-1 libgtk-4-dev
+
+    - name: Build
+      run: |
+        valac --pkg gtk4 app.vala
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: app
+        path: app
